@@ -1,5 +1,5 @@
 import { BrowserRouter, Link, Route, Routes } from 'react-router-dom'
-import { useState } from 'react'
+import { useEffect, useState, type FormEvent } from 'react'
 import './App.css'
 
 type MenuKind = 'entrees' | 'sushi' | 'barbecue' | 'bibimbap' | 'plats' | 'nouilles' | 'boissons' | 'vins' | 'desserts'
@@ -115,7 +115,7 @@ function Navigation({ dark = false }: { dark?: boolean }) {
   return <nav className={`nav ${dark ? 'nav-dark' : ''}`} aria-label="Navigation principale">
     <Link className="brand" to="/" aria-label="Accueil Barbecue Coréen Au Gourmand"><Mark /> <span>AU GOURMAND</span></Link>
     <div className="nav-links"><a href="/#histoire">Le restaurant</a><a href="/#visite">Nous trouver</a></div>
-    <div className="nav-actions"><a className="book-link" href="/menu_2026_complet.pdf">Menu</a><a className="book-link" href="https://www.thefork.fr/restaurant/barbecue-coreen-au-gourmand-r78528" target="_blank" rel="noreferrer">Réserver</a></div>
+    <div className="nav-actions"><a className="book-link" href="/menu_2026_complet.pdf">Menu</a><Link className="book-link" to="/reservation">Réserver</Link></div>
   </nav>
 }
 
@@ -124,7 +124,58 @@ function Footer() {
 }
 
 function Visit() {
-  return <section className="visit-section" id="visite"><div><p className="eyebrow">Nous trouver</p><h2>À deux pas<br /><em>de la gare.</em></h2></div><div className="visit-details"><p>Du mardi au dimanche<br />11:00 — 14:30 · 18:00 — 22:00</p><p>26 avenue Louis-Ruchonnet<br />1003 Lausanne, Suisse</p><a href="https://www.thefork.fr/restaurant/barbecue-coreen-au-gourmand-r78528" target="_blank" rel="noreferrer">Réserver sur TheFork <span>↗</span></a></div><div className="visit-mark"><Mark /></div></section>
+  return <section className="visit-section" id="visite"><div><p className="eyebrow">Nous trouver</p><h2>À deux pas<br /><em>de la gare.</em></h2></div><div className="visit-details"><p>Du mardi au dimanche<br />11:00 — 14:30 · 18:00 — 22:00</p><p>26 avenue Louis-Ruchonnet<br />1003 Lausanne, Suisse</p><Link to="/reservation">Demander une réservation <span>↗</span></Link></div><div className="visit-mark"><Mark /></div></section>
+}
+
+type ReservationForm = { name: string; email: string; phone: string; date: string; time: string; guests: string; notes: string }
+type Availability = { time: string; available: boolean }
+
+function ReservationPage() {
+  const [form, setForm] = useState<ReservationForm>({ name: '', email: '', phone: '', date: '', time: '', guests: '2', notes: '' })
+  const [slots, setSlots] = useState<Availability[]>([])
+  const [availabilityMessage, setAvailabilityMessage] = useState('')
+  const [submitState, setSubmitState] = useState<'idle' | 'sending' | 'success' | 'error'>('idle')
+  const [submitMessage, setSubmitMessage] = useState('')
+
+  useEffect(() => {
+    if (!form.date) { setSlots([]); setAvailabilityMessage(''); return }
+    const controller = new AbortController()
+    setAvailabilityMessage('Vérification des créneaux…')
+    setForm((current) => ({ ...current, time: '' }))
+
+    fetch(`/.netlify/functions/availability?date=${encodeURIComponent(form.date)}&guests=${form.guests}`, { signal: controller.signal })
+      .then(async (response) => {
+        const data = await response.json() as { slots?: Availability[]; error?: string }
+        if (!response.ok) throw new Error(data.error)
+        setSlots(data.slots ?? [])
+        setAvailabilityMessage(data.slots?.some((slot) => slot.available) ? 'Choisissez un créneau disponible.' : 'Aucun créneau disponible pour cette demande.')
+      })
+      .catch((error: Error) => { if (error.name !== 'AbortError') { setSlots([]); setAvailabilityMessage(error.message || 'Impossible de vérifier les créneaux.') } })
+
+    return () => controller.abort()
+  }, [form.date, form.guests])
+
+  const updateField = (field: keyof ReservationForm, value: string) => setForm((current) => ({ ...current, [field]: value }))
+
+  const submitReservation = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    setSubmitState('sending')
+    setSubmitMessage('')
+    try {
+      const response = await fetch('/.netlify/functions/reserve', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...form, guests: Number(form.guests) }) })
+      const data = await response.json() as { error?: string }
+      if (!response.ok) throw new Error(data.error)
+      setSubmitState('success')
+      setSubmitMessage('Votre demande a bien été reçue. Nous vous confirmerons la réservation rapidement.')
+      setForm({ name: '', email: '', phone: '', date: '', time: '', guests: '2', notes: '' })
+      setSlots([])
+    } catch (error) {
+      setSubmitState('error')
+      setSubmitMessage(error instanceof Error ? error.message : 'Une erreur est survenue. Veuillez réessayer.')
+    }
+  }
+
+  return <main className="reservation-page"><header className="menu-page-nav"><Navigation dark /></header><section className="reservation-section"><div className="reservation-copy"><p className="eyebrow rust">Réservation</p><h1>Votre table,<br /><em>en quelques instants.</em></h1><p>Choisissez une date et un créneau. Les disponibilités sont vérifiées en temps réel avant l’envoi de votre demande.</p><Link className="text-link" to="/">Retour à l’accueil <span>→</span></Link></div><form className="reservation-form" name="reservation" onSubmit={submitReservation}><label className="honeypot">Ne pas remplir ce champ<input name="bot-field" tabIndex={-1} autoComplete="off" /></label><div className="form-grid"><label>Nom complet<input required value={form.name} onChange={(event) => updateField('name', event.target.value)} /></label><label>E-mail<input type="email" required value={form.email} onChange={(event) => updateField('email', event.target.value)} /></label><label>Téléphone<input type="tel" required value={form.phone} onChange={(event) => updateField('phone', event.target.value)} /></label><label>Nombre de personnes<select value={form.guests} onChange={(event) => updateField('guests', event.target.value)}>{Array.from({ length: 12 }, (_, index) => <option key={index + 1} value={index + 1}>{index + 1} {index === 0 ? 'personne' : 'personnes'}</option>)}</select></label><label>Date<input type="date" required min={new Date().toISOString().slice(0, 10)} value={form.date} onChange={(event) => updateField('date', event.target.value)} /></label><label>Créneau<select required disabled={!slots.length} value={form.time} onChange={(event) => updateField('time', event.target.value)}><option value="">Choisir un créneau</option>{slots.filter((slot) => slot.available).map((slot) => <option key={slot.time} value={slot.time}>{slot.time}</option>)}</select></label></div><p className="availability-message" aria-live="polite">{availabilityMessage}</p><label>Message <span>facultatif</span><textarea rows={4} value={form.notes} onChange={(event) => updateField('notes', event.target.value)} placeholder="Allergies, occasion particulière…" /></label><button className="reservation-submit" type="submit" disabled={submitState === 'sending' || !form.time}>{submitState === 'sending' ? 'Envoi en cours…' : 'Envoyer la demande'}</button>{submitMessage && <p className={`form-message ${submitState}`} role="status">{submitMessage}</p>}<p className="form-note">La demande est enregistrée puis confirmée par notre équipe.</p></form></section><Footer /></main>
 }
 
 function MenuContent() {
@@ -141,7 +192,7 @@ function MenuPage() {
 }
 
 function App() {
-  return <BrowserRouter><Routes><Route path="/" element={<Home />} /><Route path="/menu" element={<MenuPage />} /><Route path="*" element={<Home />} /></Routes></BrowserRouter>
+  return <BrowserRouter><Routes><Route path="/" element={<Home />} /><Route path="/menu" element={<MenuPage />} /><Route path="/reservation" element={<ReservationPage />} /><Route path="*" element={<Home />} /></Routes></BrowserRouter>
 }
 
 export default App
