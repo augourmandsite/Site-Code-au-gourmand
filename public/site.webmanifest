@@ -1,0 +1,16 @@
+{
+  "name": "Barbecue Coréen Au Gourmand",
+  "short_name": "Au Gourmand",
+  "start_url": "/",
+  "display": "browser",
+  "background_color": "#f3f0e8",
+  "theme_color": "#201d18",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
