@@ -71,6 +71,18 @@ Pour tester les fonctions localement, créez un fichier `.env` à partir de `.en
 npx netlify dev
 ```
 
+## E-mails de réservation avec Resend
+
+Après avoir vérifié le domaine d’envoi dans Resend, ajoutez ces variables dans Netlify → **Project configuration** → **Environment variables** :
+
+```text
+RESEND_API_KEY=re_...
+RESEND_FROM=Au Gourmand <reservations@au-gourmand.ch>
+RESERVATION_HOST_EMAIL=augourmandsite@gmail.com
+```
+
+Chaque réservation enregistrée envoie alors un récapitulatif à l’équipe et un e-mail de confirmation au client. Ces clés doivent être ajoutées uniquement dans Netlify, jamais dans GitHub.
+
 ## GitHub
 
 Le dépôt distant est :
