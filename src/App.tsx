@@ -1,33 +1,33 @@
 import { useState } from 'react'
 import './App.css'
 
-type MenuKind = 'bbq' | 'signature' | 'sides'
+type MenuKind = 'barbecue' | 'plats' | 'accompagnements'
 
-const menu: Record<MenuKind, { name: string; description: string; price: string; note?: string }[]> = {
-  bbq: [
-    { name: 'Prime Galbi', description: 'USDA prime short rib, house pear marinade', price: '36', note: 'Our classic' },
-    { name: 'Deungshim', description: 'Dry-aged ribeye, smoked sea salt', price: '34' },
-    { name: 'Samgyeopsal', description: 'Heritage pork belly, sesame oil & salt', price: '22' },
-    { name: 'Dak Galbi', description: 'Gochujang chicken thigh, sweet potato', price: '20' },
+const menu: Record<MenuKind, { name: string; description: string; note?: string }[]> = {
+  barbecue: [
+    { name: 'Grillade de bœuf mariné', description: 'Viande marinée, préparée pour le barbecue coréen', note: 'À partager' },
+    { name: 'Grillade de porc mariné', description: 'Une sélection généreuse de viande et de marinades maison' },
+    { name: 'Grillade de poulet mariné', description: 'Marinade savoureuse et cuisson au grill, à table' },
+    { name: 'Barbecue coréen', description: 'L’expérience conviviale autour de la grille' },
   ],
-  signature: [
-    { name: 'Hanar Bibimbap', description: 'Seasonal vegetables, egg yolk, crispy rice', price: '19', note: 'Vegetarian' },
-    { name: 'Kimchi Jjigae', description: 'Aged kimchi stew, tofu, pork belly', price: '18' },
-    { name: 'Yukhoe', description: 'Hand-cut beef tartare, nashi pear, pine nut', price: '21' },
-    { name: 'Mul Naengmyeon', description: 'Cold buckwheat noodles, brisket broth', price: '17' },
+  plats: [
+    { name: 'Bibimbap', description: 'Le grand classique coréen, servi dans son bol chaud', note: 'Incontournable' },
+    { name: 'Nouilles coréennes', description: 'Nouilles généreuses et garniture du jour' },
+    { name: 'Potage de kimchi', description: 'Un bouillon chaleureux aux saveurs relevées' },
+    { name: 'Bibimbap végétarien', description: 'Une version végétale du plat emblématique' },
   ],
-  sides: [
-    { name: 'Daily Banchan', description: 'A changing collection of small plates', price: '9' },
-    { name: 'Scallion Pancake', description: 'Crisp savoury pancake, soy dip', price: '12' },
-    { name: 'Korean Fried Chicken', description: 'Twice-fried, soy garlic glaze', price: '15' },
-    { name: 'Sweet Rice Cream', description: 'Toasted barley, caramel, sesame', price: '10' },
+  accompagnements: [
+    { name: 'Kimchi', description: 'Chou fermenté coréen, relevé et plein de caractère' },
+    { name: 'Riz blanc', description: 'L’accompagnement essentiel pour le partage' },
+    { name: 'Légumes du jour', description: 'Petites assiettes inspirées de la tradition coréenne' },
+    { name: 'Sauces maison', description: 'Pour accompagner chaque bouchée selon vos envies' },
   ],
 }
 
 const categories: { id: MenuKind; label: string }[] = [
-  { id: 'bbq', label: 'From the grill' },
-  { id: 'signature', label: 'Signatures' },
-  { id: 'sides', label: 'To share' },
+  { id: 'barbecue', label: 'Le barbecue' },
+  { id: 'plats', label: 'Plats coréens' },
+  { id: 'accompagnements', label: 'À partager' },
 ]
 
 function Mark() {
@@ -35,29 +35,27 @@ function Mark() {
 }
 
 function App() {
-  const [active, setActive] = useState<MenuKind>('bbq')
-  const [isBooked, setIsBooked] = useState(false)
+  const [active, setActive] = useState<MenuKind>('barbecue')
   const goToMenu = () => document.querySelector('#menu')?.scrollIntoView({ behavior: 'smooth' })
 
   return (
     <main>
       <section className="hero" id="top">
-        <nav className="nav" aria-label="Main navigation">
-          <a className="brand" href="#top" aria-label="Hanar home"><Mark /> <span>HANAR</span></a>
-          <div className="nav-links"><a href="#menu">Menu</a><a href="#story">Our story</a><a href="#visit">Visit</a></div>
-          <button className="book-link" onClick={() => setIsBooked(true)}>Book a table <span>↗</span></button>
+        <nav className="nav" aria-label="Navigation principale">
+          <a className="brand" href="#top" aria-label="Accueil Barbecue Coréen Au Gourmand"><Mark /> <span>AU GOURMAND</span></a>
+          <div className="nav-links"><a href="#menu">Carte</a><a href="#histoire">Le restaurant</a><a href="#visite">Nous trouver</a></div>
+          <a className="book-link" href="https://www.thefork.fr/restaurant/barbecue-coreen-au-gourmand-r78528" target="_blank" rel="noreferrer">Réserver <span>↗</span></a>
         </nav>
-        <div className="hero-content"><p className="eyebrow">Korean barbecue · Zurich</p><h1>Fire, <em>reimagined.</em></h1><p className="intro">Modern Korean dining rooted in the ritual of cooking together.</p><button className="round-button" onClick={goToMenu}><span>Explore the menu</span><b>↓</b></button></div>
-        <div className="hero-footer"><span>Tue—Sun / 18:00—23:30</span><span className="scroll-note">Scroll to discover <i /></span><span>Hanar Restaurant<br />Limmatquai 42, 8001 Zürich</span></div>
+        <div className="hero-content"><p className="eyebrow">Barbecue coréen · Lausanne</p><h1>Le goût du feu,<br /><em>à partager.</em></h1><p className="intro">Des grillades marinées, des plats coréens généreux et le plaisir de se retrouver autour de la table.</p><button className="round-button" onClick={goToMenu}><span>Découvrir la carte</span><b>↓</b></button></div>
+        <div className="hero-footer"><span>Mar—Sam / 11:00—14:30 & 18:00—22:00</span><span className="scroll-note">Découvrir <i /></span><span>26 av. Louis-Ruchonnet<br />1003 Lausanne</span></div>
       </section>
 
-      <section className="intro-section" id="story"><div className="vertical-label">Seoul · Zürich · Since 2024</div><div className="intro-copy"><p className="eyebrow rust">The Hanar way</p><h2>A table is where<br /><em>everything begins.</em></h2><p>At Hanar, the grill sits at the centre. Ingredients are chosen with a quiet obsession, then brought to life over glowing charcoal — one shared bite at a time.</p><a className="text-link" href="#visit">More about our table <span>→</span></a></div><div className="stamp">한<br />나<br />르</div></section>
+      <section className="intro-section" id="histoire"><div className="vertical-label">Cuisine coréenne · Lausanne</div><div className="intro-copy"><p className="eyebrow rust">Notre table</p><h2>Le barbecue, au<br /><em>cœur du repas.</em></h2><p>À deux pas de la gare CFF, Au Gourmand vous invite à découvrir une cuisine coréenne conviviale : des viandes marinées à griller, des bibimbaps et des nouilles à savourer ensemble.</p><a className="text-link" href="#visite">Nous rendre visite <span>→</span></a></div><div className="stamp">맛<br />있<br />게</div></section>
 
-      <section className="menu-section" id="menu"><header className="section-heading"><div><p className="eyebrow rust">Our menu</p><h2>Made for the <em>middle</em><br />of the table.</h2></div><p>Every order is designed to move around the table. Choose your grill, then let the sides do their thing.</p></header><div className="menu-layout"><aside className="menu-aside"><span>01 — 03</span><div>{categories.map((category, i) => <button key={category.id} className={active === category.id ? 'active' : ''} onClick={() => setActive(category.id)}><b>0{i + 1}</b>{category.label}</button>)}</div><small>All barbecue orders come with lettuce wraps, ssamjang & daily banchan.</small></aside><div className="menu-card" aria-live="polite"><div className="card-topline"><span>{categories.find(c => c.id === active)?.label}</span><span>CHF</span></div>{menu[active].map((item) => <article className="dish" key={item.name}><div><h3>{item.name} {item.note && <small>{item.note}</small>}</h3><p>{item.description}</p></div><strong>{item.price}</strong></article>)}<p className="menu-footnote">Ask our team about today’s off-menu cuts.</p></div></div></section>
+      <section className="menu-section" id="menu"><header className="section-heading"><div><p className="eyebrow rust">La carte</p><h2>Des saveurs à placer<br /><em>au milieu de la table.</em></h2></div><p>Le barbecue coréen se vit ensemble. Choisissez votre grillade, ajoutez vos favoris et laissez la table faire le reste.</p></header><div className="menu-layout"><aside className="menu-aside"><span>01 — 03</span><div>{categories.map((category, i) => <button key={category.id} className={active === category.id ? 'active' : ''} onClick={() => setActive(category.id)}><b>0{i + 1}</b>{category.label}</button>)}</div><small>La sélection complète et les prix sont disponibles directement au restaurant.</small></aside><div className="menu-card" aria-live="polite"><div className="card-topline"><span>{categories.find(c => c.id === active)?.label}</span><span>À la carte</span></div>{menu[active].map((item) => <article className="dish" key={item.name}><div><h3>{item.name} {item.note && <small>{item.note}</small>}</h3><p>{item.description}</p></div><strong>—</strong></article>)}<p className="menu-footnote">Une envie particulière ? Demandez conseil à notre équipe.</p></div></div></section>
 
-      <section className="visit-section" id="visit"><div><p className="eyebrow">Find your seat</p><h2>Dinner is<br /><em>waiting.</em></h2></div><div className="visit-details"><p>Tuesday — Sunday<br />18:00 — 23:30</p><p>Limmatquai 42<br />8001 Zürich, Switzerland</p><button onClick={() => setIsBooked(true)}>Reserve a table <span>↗</span></button></div><div className="visit-mark"><Mark /></div></section>
-      <footer><a className="brand" href="#top"><Mark /> <span>HANAR</span></a><span>© 2024 Hanar Restaurant</span><div><a href="#top">Instagram</a><a href="mailto:hello@hanar.restaurant">Email</a></div></footer>
-      {isBooked && <div className="modal-backdrop" role="presentation" onClick={() => setIsBooked(false)}><section className="booking-modal" role="dialog" aria-modal="true" aria-labelledby="book-title" onClick={(e) => e.stopPropagation()}><button className="close" aria-label="Close" onClick={() => setIsBooked(false)}>×</button><p className="eyebrow rust">Reservations</p><h2 id="book-title">Your table<br /><em>awaits.</em></h2><p>For this demo, please call +41 44 123 45 67 or email hello@hanar.restaurant.</p><button onClick={() => setIsBooked(false)}>Got it</button></section></div>}
+      <section className="visit-section" id="visite"><div><p className="eyebrow">Nous trouver</p><h2>À deux pas<br /><em>de la gare.</em></h2></div><div className="visit-details"><p>Du mardi au samedi<br />11:00 — 14:30 · 18:00 — 22:00</p><p>26 avenue Louis-Ruchonnet<br />1003 Lausanne, Suisse</p><a href="https://www.thefork.fr/restaurant/barbecue-coreen-au-gourmand-r78528" target="_blank" rel="noreferrer">Réserver sur TheFork <span>↗</span></a></div><div className="visit-mark"><Mark /></div></section>
+      <footer><a className="brand" href="#top"><Mark /> <span>AU GOURMAND</span></a><span>Barbecue Coréen Au Gourmand · Lausanne</span><div><a href="https://www.thefork.fr/restaurant/barbecue-coreen-au-gourmand-r78528" target="_blank" rel="noreferrer">TheFork</a><a href="#visite">Adresse</a></div></footer>
     </main>
   )
 }
