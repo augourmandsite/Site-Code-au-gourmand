@@ -114,8 +114,8 @@ function Mark() { return <span className="mark" aria-hidden="true"><i /><i /><i 
 function Navigation({ dark = false }: { dark?: boolean }) {
   return <nav className={`nav ${dark ? 'nav-dark' : ''}`} aria-label="Navigation principale">
     <Link className="brand" to="/" aria-label="Accueil Barbecue Coréen Au Gourmand"><Mark /> <span>AU GOURMAND</span></Link>
-    <div className="nav-links"><Link to="/menu">Carte</Link><a href="/#histoire">Le restaurant</a><a href="/#visite">Nous trouver</a></div>
-    <a className="book-link" href="https://www.thefork.fr/restaurant/barbecue-coreen-au-gourmand-r78528" target="_blank" rel="noreferrer">Réserver <span>↗</span></a>
+    <div className="nav-links"><a href="/#histoire">Le restaurant</a><a href="/#visite">Nous trouver</a></div>
+    <div className="nav-actions"><Link className="menu-link" to="/menu">Menu</Link><a className="book-link" href="https://www.thefork.fr/restaurant/barbecue-coreen-au-gourmand-r78528" target="_blank" rel="noreferrer">Réserver <span>↗</span></a></div>
   </nav>
 }
 
