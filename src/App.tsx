@@ -137,7 +137,7 @@ function Home() {
 }
 
 function MenuPage() {
-  return <main className="menu-page"><header className="menu-page-nav"><Navigation dark /></header><section className="menu-page-heading"><p className="eyebrow rust">Barbecue Coréen Au Gourmand</p><h1>La carte<br /><em>du restaurant.</em></h1><p>Grillades, sushi, boissons et douceurs — découvrez notre sélection complète.</p></section><MenuContent /><Visit /><Footer /></main>
+  return <main className="menu-page"><header className="menu-page-nav"><Navigation dark /></header><MenuContent /><Visit /><Footer /></main>
 }
 
 function App() {
