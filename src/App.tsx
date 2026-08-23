@@ -124,7 +124,7 @@ function Navigation({ dark = false }: { dark?: boolean }) {
 }
 
 function Footer() {
-  return <footer><Link className="brand" to="/"><Mark /> <span>AU GOURMAND</span></Link><span>Barbecue Coréen Au Gourmand · Lausanne</span><div><a className="instagram-link" href="https://www.instagram.com/barbecuecoreen?igsi=d2JsY3I4MTR1N3Bx" target="_blank" rel="noreferrer">Instagram <span>↗</span></a><a href="https://www.thefork.fr/restaurant/barbecue-coreen-au-gourmand-r78528" target="_blank" rel="noreferrer">TheFork</a><a href="/#visite">Adresse</a></div></footer>
+  return <footer><Link className="brand" to="/"><Mark /> <span>AU GOURMAND</span></Link><span>Barbecue Coréen Au Gourmand · Lausanne</span><div><a href="https://www.instagram.com/barbecuecoreen?igsi=d2JsY3I4MTR1N3Bx" target="_blank" rel="noreferrer">Instagram <span>↗</span></a><a href="https://www.thefork.fr/restaurant/barbecue-coreen-au-gourmand-r78528" target="_blank" rel="noreferrer">TheFork</a><a href="/#visite">Adresse</a></div></footer>
 }
 
 function Visit() {
