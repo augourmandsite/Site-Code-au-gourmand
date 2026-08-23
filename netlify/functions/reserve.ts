@@ -20,7 +20,7 @@ async function sendReservationEmails({ name, email, phone, date, time, guests, n
   const hostEmail = process.env.RESERVATION_HOST_EMAIL
   if (!apiKey || !from || !hostEmail) {
     console.warn('E-mails de réservation non configurés : variables Resend manquantes.')
-    return false
+    return { guestEmailSent: false }
   }
 
   const resend = new Resend(apiKey)
@@ -29,14 +29,15 @@ async function sendReservationEmails({ name, email, phone, date, time, guests, n
 
   try {
     const [hostResult, guestResult] = await Promise.all([
-      resend.emails.send({ from, to: [hostEmail], replyTo: email, subject: `Nouvelle réservation — ${formattedDate} à ${time}`, html: `<h1>Nouvelle demande de réservation</h1>${details}` }),
-      resend.emails.send({ from, to: [email], replyTo: hostEmail, subject: 'Votre demande de réservation — Au Gourmand', html: `<h1>Votre demande a bien été reçue.</h1><p>Bonjour ${escapeHtml(name)},</p><p>Nous vous confirmerons votre réservation rapidement.</p><h2>Récapitulatif</h2>${details}<p>Pour toute question, appelez le <a href="tel:+41213115474">021 311 54 74</a>.</p>` }),
+      resend.emails.send({ from, to: [hostEmail], replyTo: email, subject: `Nouvelle réservation confirmée — ${formattedDate} à ${time}`, html: `<h1>Nouvelle réservation confirmée</h1>${details}` }),
+      resend.emails.send({ from, to: [email], replyTo: hostEmail, subject: 'Votre réservation est confirmée — Au Gourmand', html: `<h1>Votre réservation est confirmée.</h1><p>Bonjour ${escapeHtml(name)},</p><p>Votre table est bien réservée. Nous avons hâte de vous accueillir.</p><h2>Récapitulatif</h2>${details}<p>Pour toute question, appelez le <a href="tel:+41213115474">021 311 54 74</a>.</p>` }),
     ])
-    if (hostResult.error || guestResult.error) throw hostResult.error ?? guestResult.error
-    return true
+    if (hostResult.error) console.error('Échec de l’e-mail envoyé au restaurant', hostResult.error)
+    if (guestResult.error) console.error('Échec de l’e-mail de confirmation client', guestResult.error)
+    return { guestEmailSent: !guestResult.error }
   } catch (error) {
     console.error('Échec de l’envoi de l’e-mail de réservation', error)
-    return false
+    return { guestEmailSent: false }
   }
 }
 
@@ -69,9 +70,9 @@ export const handler: Handler = async (event) => {
 
     if (error) return { statusCode: 409, body: JSON.stringify({ error: error.message }) }
 
-    const notificationSent = await sendReservationEmails({ name, email, phone, date, time, guests, notes: payload.notes?.trim() || undefined })
+    const { guestEmailSent } = await sendReservationEmails({ name, email, phone, date, time, guests, notes: payload.notes?.trim() || undefined })
 
-    return { statusCode: 201, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ reservation: data, notificationSent }) }
+    return { statusCode: 201, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ reservation: data, confirmationEmailSent: guestEmailSent }) }
   } catch (error) {
     console.error(error)
     return { statusCode: 500, body: JSON.stringify({ error: 'Une erreur est survenue. Veuillez réessayer.' }) }
