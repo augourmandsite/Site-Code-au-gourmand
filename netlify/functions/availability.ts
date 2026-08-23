@@ -1,5 +1,5 @@
 import type { Handler } from '@netlify/functions'
-import { getSupabase, isValidDate, reservationSlots } from './_lib/reservations'
+import { getSupabase, isOpenDay, isValidDate, reservationSlots } from './_lib/reservations'
 
 export const handler: Handler = async (event) => {
   const date = event.queryStringParameters?.date ?? ''
@@ -8,6 +8,8 @@ export const handler: Handler = async (event) => {
   if (!isValidDate(date) || !Number.isInteger(guests) || guests < 1 || guests > 20) {
     return { statusCode: 400, body: JSON.stringify({ error: 'Date ou nombre de personnes invalide.' }) }
   }
+  if (!isOpenDay(date)) return { statusCode: 400, body: JSON.stringify({ error: 'Le restaurant est fermé le lundi. Les réservations sont disponibles du mardi au dimanche, y compris le jour même selon les créneaux restants.' }) }
+
   try {
     const supabase = getSupabase()
     const [{ data: settings, error: settingsError }, { data: reservations, error: reservationsError }] = await Promise.all([
