@@ -1,32 +1,54 @@
-# React + TypeScript + Vite
+# Barbecue Coréen Au Gourmand
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Site vitrine du restaurant, construit avec React, TypeScript et Vite.
 
-Currently, two official plugins are available:
+## Lancer le site
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Pré-requis : Node.js 20 ou plus récent.
 
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```bash
+npm install
+npm run dev
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+Ouvrez ensuite l’adresse indiquée dans le terminal, généralement `http://localhost:5173`.
+
+Autres commandes utiles :
+
+```bash
+npm run build    # vérifie TypeScript et génère le site dans dist/
+npm run preview  # affiche localement la version générée
+npm run lint     # contrôle rapide du code
+```
+
+## Modifier le site
+
+- `src/App.tsx` : textes, horaires, liens, carte, prix et navigation.
+- `src/App.css` : couleurs, mise en page et style responsive.
+- `public/restaurant.png` : photo d’ouverture du site.
+- `public/_redirects` : redirection nécessaire pour que la page `/menu` fonctionne sur Netlify.
+
+La page d’accueil est disponible sur `/` et la carte complète sur `/menu`.
+
+## Déploiement sur Netlify
+
+Le projet contient déjà la configuration dans `netlify.toml` :
+
+- Build command : `npm run build`
+- Publish directory : `dist`
+
+Pour déployer :
+
+1. Connectez le dépôt GitHub dans Netlify.
+2. Choisissez la branche `main`.
+3. Cliquez sur **Deploy site**.
+
+Chaque `git push` sur `main` déclenche ensuite un nouveau déploiement automatiquement.
+
+## GitHub
+
+Le dépôt distant est :
+
+```text
+git@github-augourmand:augourmandsite/Site-Code-au-gourmand.git
+```
