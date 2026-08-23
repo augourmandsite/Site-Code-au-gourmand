@@ -5,9 +5,10 @@ export const handler: Handler = async (event) => {
   const date = event.queryStringParameters?.date ?? ''
   const guests = Number(event.queryStringParameters?.guests ?? 1)
 
-  if (!isValidDate(date) || !isOpenDay(date) || !Number.isInteger(guests) || guests < 1 || guests > 20) {
+  if (!isValidDate(date) || !Number.isInteger(guests) || guests < 1 || guests > 20) {
     return { statusCode: 400, body: JSON.stringify({ error: 'Date ou nombre de personnes invalide.' }) }
   }
+  if (!isOpenDay(date)) return { statusCode: 400, body: JSON.stringify({ error: 'Le restaurant est fermé le lundi. Les réservations sont disponibles du mardi au dimanche, y compris le jour même selon les créneaux restants.' }) }
 
   try {
     const supabase = getSupabase()

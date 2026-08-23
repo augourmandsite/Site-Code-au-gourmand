@@ -52,9 +52,10 @@ export const handler: Handler = async (event) => {
     const time = payload.time ?? ''
     const guests = Number(payload.guests)
 
-    if (!name || !/^\S+@\S+\.\S+$/.test(email) || !phone || !isValidDate(date) || !isOpenDay(date) || !reservationSlots.includes(time) || !Number.isInteger(guests) || guests < 1 || guests > 20) {
+    if (!name || !/^\S+@\S+\.\S+$/.test(email) || !phone || !isValidDate(date) || !reservationSlots.includes(time) || !Number.isInteger(guests) || guests < 1 || guests > 20) {
       return { statusCode: 400, body: JSON.stringify({ error: 'Merci de compléter tous les champs obligatoires.' }) }
     }
+    if (!isOpenDay(date)) return { statusCode: 400, body: JSON.stringify({ error: 'Le restaurant est fermé le lundi. Choisissez une date du mardi au dimanche.' }) }
 
     const { data, error } = await getSupabase().rpc('create_reservation', {
       p_guest_name: name,
