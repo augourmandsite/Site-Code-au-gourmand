@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /menu
+
+Sitemap: https://au-gourmand.ch/sitemap.xml
