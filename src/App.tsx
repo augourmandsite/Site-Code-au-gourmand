@@ -1,3 +1,4 @@
+import { BrowserRouter, Link, Route, Routes } from 'react-router-dom'
 import { useState } from 'react'
 import './App.css'
 
@@ -110,16 +111,37 @@ const categories: { id: MenuKind; label: string }[] = [
 
 function Mark() { return <span className="mark" aria-hidden="true"><i /><i /><i /><i /></span> }
 
-function App() {
+function Navigation({ dark = false }: { dark?: boolean }) {
+  return <nav className={`nav ${dark ? 'nav-dark' : ''}`} aria-label="Navigation principale">
+    <Link className="brand" to="/" aria-label="Accueil Barbecue Coréen Au Gourmand"><Mark /> <span>AU GOURMAND</span></Link>
+    <div className="nav-links"><Link to="/menu">Carte</Link><a href="/#histoire">Le restaurant</a><a href="/#visite">Nous trouver</a></div>
+    <a className="book-link" href="https://www.thefork.fr/restaurant/barbecue-coreen-au-gourmand-r78528" target="_blank" rel="noreferrer">Réserver <span>↗</span></a>
+  </nav>
+}
+
+function Footer() {
+  return <footer><Link className="brand" to="/"><Mark /> <span>AU GOURMAND</span></Link><span>Barbecue Coréen Au Gourmand · Lausanne</span><div><a href="https://www.thefork.fr/restaurant/barbecue-coreen-au-gourmand-r78528" target="_blank" rel="noreferrer">TheFork</a><a href="/#visite">Adresse</a></div></footer>
+}
+
+function Visit() {
+  return <section className="visit-section" id="visite"><div><p className="eyebrow">Nous trouver</p><h2>À deux pas<br /><em>de la gare.</em></h2></div><div className="visit-details"><p>Du mardi au samedi<br />11:00 — 14:30 · 18:00 — 22:00</p><p>26 avenue Louis-Ruchonnet<br />1003 Lausanne, Suisse</p><a href="https://www.thefork.fr/restaurant/barbecue-coreen-au-gourmand-r78528" target="_blank" rel="noreferrer">Réserver sur TheFork <span>↗</span></a></div><div className="visit-mark"><Mark /></div></section>
+}
+
+function MenuContent() {
   const [active, setActive] = useState<MenuKind>('entrees')
-  const goToMenu = () => document.querySelector('#menu')?.scrollIntoView({ behavior: 'smooth' })
-  return <main>
-    <section className="hero" id="top"><nav className="nav" aria-label="Navigation principale"><a className="brand" href="#top" aria-label="Accueil Barbecue Coréen Au Gourmand"><Mark /> <span>AU GOURMAND</span></a><div className="nav-links"><a href="#menu">Carte</a><a href="#histoire">Le restaurant</a><a href="#visite">Nous trouver</a></div><a className="book-link" href="https://www.thefork.fr/restaurant/barbecue-coreen-au-gourmand-r78528" target="_blank" rel="noreferrer">Réserver <span>↗</span></a></nav><div className="hero-content"><p className="eyebrow">Barbecue coréen · Lausanne</p><h1>Le goût du feu,<br /><em>à partager.</em></h1><p className="intro">Des grillades marinées, des plats coréens généreux et le plaisir de se retrouver autour de la table.</p><button className="round-button" onClick={goToMenu}><span>Découvrir la carte</span><b>↓</b></button></div><div className="hero-footer"><span>Mar—Sam / 11:00—14:30 & 18:00—22:00</span><span className="scroll-note">Découvrir <i /></span><span>26 av. Louis-Ruchonnet<br />1003 Lausanne</span></div></section>
-    <section className="intro-section" id="histoire"><div className="vertical-label">Cuisine coréenne · Lausanne</div><div className="intro-copy"><p className="eyebrow rust">Notre table</p><h2>Le barbecue, au<br /><em>cœur du repas.</em></h2><p>À deux pas de la gare CFF, Au Gourmand vous invite à découvrir une cuisine coréenne conviviale : des viandes marinées à griller, des bibimbaps, des sushi et des nouilles à savourer ensemble.</p><a className="text-link" href="#visite">Nous rendre visite <span>→</span></a></div><div className="stamp">맛<br />있<br />게</div></section>
-    <section className="menu-section" id="menu"><header className="section-heading"><div><p className="eyebrow rust">La carte</p><h2>Des saveurs à placer<br /><em>au milieu de la table.</em></h2></div><p>Découvrez l’ensemble de notre carte : barbecue coréen, sushi, plats chauds, boissons et desserts.</p></header><div className="menu-layout"><aside className="menu-aside"><span>01 — 09</span><div>{categories.map((category, index) => <button key={category.id} className={active === category.id ? 'active' : ''} onClick={() => setActive(category.id)}><b>{String(index + 1).padStart(2, '0')}</b>{category.label}</button>)}</div><small>Les prix et les plats sont retranscrits à partir de la carte du restaurant.</small></aside><div className="menu-card" aria-live="polite"><div className="card-topline"><span>{categories.find(c => c.id === active)?.label}</span><span>Prix</span></div>{menu[active].map((item) => <article className="dish" key={item.name}><div><h3>{item.name} {item.note && <small>{item.note}</small>}</h3>{item.description && <p>{item.description}</p>}</div><strong>{item.price}</strong></article>)}<p className="menu-footnote">Les disponibilités et prix peuvent évoluer ; confirmez-les directement auprès du restaurant.</p></div></div></section>
-    <section className="visit-section" id="visite"><div><p className="eyebrow">Nous trouver</p><h2>À deux pas<br /><em>de la gare.</em></h2></div><div className="visit-details"><p>Du mardi au samedi<br />11:00 — 14:30 · 18:00 — 22:00</p><p>26 avenue Louis-Ruchonnet<br />1003 Lausanne, Suisse</p><a href="https://www.thefork.fr/restaurant/barbecue-coreen-au-gourmand-r78528" target="_blank" rel="noreferrer">Réserver sur TheFork <span>↗</span></a></div><div className="visit-mark"><Mark /></div></section>
-    <footer><a className="brand" href="#top"><Mark /> <span>AU GOURMAND</span></a><span>Barbecue Coréen Au Gourmand · Lausanne</span><div><a href="https://www.thefork.fr/restaurant/barbecue-coreen-au-gourmand-r78528" target="_blank" rel="noreferrer">TheFork</a><a href="#visite">Adresse</a></div></footer>
-  </main>
+  return <section className="menu-section" id="menu"><header className="section-heading"><div><p className="eyebrow rust">La carte</p><h2>Des saveurs à placer<br /><em>au milieu de la table.</em></h2></div><p>Découvrez l’ensemble de notre carte : barbecue coréen, sushi, plats chauds, boissons et desserts.</p></header><div className="menu-layout"><aside className="menu-aside"><span>01 — 09</span><div>{categories.map((category, index) => <button key={category.id} className={active === category.id ? 'active' : ''} onClick={() => setActive(category.id)}><b>{String(index + 1).padStart(2, '0')}</b>{category.label}</button>)}</div><small>Les prix et les plats sont retranscrits à partir de la carte du restaurant.</small></aside><div className="menu-card" aria-live="polite"><div className="card-topline"><span>{categories.find(c => c.id === active)?.label}</span><span>Prix</span></div>{menu[active].map((item) => <article className="dish" key={item.name}><div><h3>{item.name} {item.note && <small>{item.note}</small>}</h3>{item.description && <p>{item.description}</p>}</div><strong>{item.price}</strong></article>)}<p className="menu-footnote">Les disponibilités et prix peuvent évoluer ; confirmez-les directement auprès du restaurant.</p></div></div></section>
+}
+
+function Home() {
+  return <main><section className="hero" id="top"><Navigation /><div className="hero-content"><p className="eyebrow">Barbecue coréen · Lausanne</p><h1>Le goût du feu,<br /><em>à partager.</em></h1><p className="intro">Des grillades marinées, des plats coréens généreux et le plaisir de se retrouver autour de la table.</p><Link className="round-button" to="/menu"><span>Découvrir la carte</span><b>→</b></Link></div><div className="hero-footer"><span>Mar—Sam / 11:00—14:30 & 18:00—22:00</span><span className="scroll-note">Découvrir <i /></span><span>26 av. Louis-Ruchonnet<br />1003 Lausanne</span></div></section><section className="intro-section" id="histoire"><div className="vertical-label">Cuisine coréenne · Lausanne</div><div className="intro-copy"><p className="eyebrow rust">Notre table</p><h2>Le barbecue, au<br /><em>cœur du repas.</em></h2><p>À deux pas de la gare CFF, Au Gourmand vous invite à découvrir une cuisine coréenne conviviale : des viandes marinées à griller, des bibimbaps, des sushi et des nouilles à savourer ensemble.</p><a className="text-link" href="#visite">Nous rendre visite <span>→</span></a></div><div className="stamp">맛<br />있<br />게</div></section><Visit /><Footer /></main>
+}
+
+function MenuPage() {
+  return <main className="menu-page"><header className="menu-page-nav"><Navigation dark /></header><section className="menu-page-heading"><p className="eyebrow rust">Barbecue Coréen Au Gourmand</p><h1>La carte<br /><em>du restaurant.</em></h1><p>Grillades, sushi, boissons et douceurs — découvrez notre sélection complète.</p></section><MenuContent /><Visit /><Footer /></main>
+}
+
+function App() {
+  return <BrowserRouter><Routes><Route path="/" element={<Home />} /><Route path="/menu" element={<MenuPage />} /><Route path="*" element={<Home />} /></Routes></BrowserRouter>
 }
 
 export default App
