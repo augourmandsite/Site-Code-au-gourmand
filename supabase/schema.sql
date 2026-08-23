@@ -46,10 +46,6 @@ declare
   booked_covers integer;
   result public.reservations;
 begin
-  if extract(dow from p_reservation_date) = 1 then
-    raise exception 'Le restaurant est fermé le lundi.';
-  end if;
-
   select max_covers_per_slot into max_covers
   from public.restaurant_settings
   where id = true

@@ -1,6 +1,6 @@
 import type { Handler } from '@netlify/functions'
 import { Resend } from 'resend'
-import { getSupabase, isOpenDay, isValidDate, reservationSlots } from './_lib/reservations'
+import { getSupabase, isValidDate, reservationSlots } from './_lib/reservations'
 
 type ReservationPayload = {
   name?: string
@@ -55,8 +55,6 @@ export const handler: Handler = async (event) => {
     if (!name || !/^\S+@\S+\.\S+$/.test(email) || !phone || !isValidDate(date) || !reservationSlots.includes(time) || !Number.isInteger(guests) || guests < 1 || guests > 20) {
       return { statusCode: 400, body: JSON.stringify({ error: 'Merci de compléter tous les champs obligatoires.' }) }
     }
-    if (!isOpenDay(date)) return { statusCode: 400, body: JSON.stringify({ error: 'Le restaurant est fermé le lundi. Choisissez une date du mardi au dimanche.' }) }
-
     const { data, error } = await getSupabase().rpc('create_reservation', {
       p_guest_name: name,
       p_guest_email: email,
