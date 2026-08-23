@@ -115,7 +115,7 @@ function Navigation({ dark = false }: { dark?: boolean }) {
   return <nav className={`nav ${dark ? 'nav-dark' : ''}`} aria-label="Navigation principale">
     <Link className="brand" to="/" aria-label="Accueil Barbecue Coréen Au Gourmand"><Mark /> <span>AU GOURMAND</span></Link>
     <div className="nav-links"><a href="/#histoire">Le restaurant</a><a href="/#visite">Nous trouver</a></div>
-    <div className="nav-actions"><Link className="book-link" to="/menu">Menu</Link><a className="book-link" href="https://www.thefork.fr/restaurant/barbecue-coreen-au-gourmand-r78528" target="_blank" rel="noreferrer">Réserver</a></div>
+    <div className="nav-actions"><a className="book-link" href="/menu_2026_complet.pdf">Menu</a><a className="book-link" href="https://www.thefork.fr/restaurant/barbecue-coreen-au-gourmand-r78528" target="_blank" rel="noreferrer">Réserver</a></div>
   </nav>
 }
 
@@ -133,7 +133,7 @@ function MenuContent() {
 }
 
 function Home() {
-  return <main><section className="hero" id="top"><Navigation /><div className="hero-content"><p className="eyebrow">Barbecue coréen · Lausanne</p><h1>Le goût du feu,<br /><em>à partager.</em></h1><p className="intro">Des grillades marinées, des plats coréens généreux et le plaisir de se retrouver autour de la table.</p><Link className="round-button" to="/menu"><span>Découvrir la carte</span><b>→</b></Link></div><div className="hero-footer"><span>Mar—Dim / 11:00—14:30 & 18:00—22:00</span><span className="scroll-note">Découvrir <i /></span><span>26 av. Louis-Ruchonnet<br />1003 Lausanne</span></div></section><section className="intro-section" id="histoire"><div className="vertical-label">Cuisine coréenne · Lausanne</div><div className="intro-copy"><p className="eyebrow rust">Notre table</p><h2>Le barbecue, au<br /><em>cœur du repas.</em></h2><p>À deux pas de la gare CFF, Au Gourmand vous invite à découvrir une cuisine coréenne conviviale : des viandes marinées à griller, des bibimbaps, des sushi et des nouilles à savourer ensemble.</p><a className="text-link" href="#visite">Nous rendre visite <span>→</span></a></div><div className="stamp">맛<br />있<br />게</div></section><Visit /><Footer /></main>
+  return <main><section className="hero" id="top"><Navigation /><div className="hero-content"><p className="eyebrow">Barbecue coréen · Lausanne</p><h1>Le goût du feu,<br /><em>à partager.</em></h1><p className="intro">Des grillades marinées, des plats coréens généreux et le plaisir de se retrouver autour de la table.</p><a className="round-button" href="/menu_2026_complet.pdf"><span>Découvrir la carte</span><b>→</b></a></div><div className="hero-footer"><span>Mar—Dim / 11:00—14:30 & 18:00—22:00</span><span className="scroll-note">Découvrir <i /></span><span>26 av. Louis-Ruchonnet<br />1003 Lausanne</span></div></section><section className="intro-section" id="histoire"><div className="vertical-label">Cuisine coréenne · Lausanne</div><div className="intro-copy"><p className="eyebrow rust">Notre table</p><h2>Le barbecue, au<br /><em>cœur du repas.</em></h2><p>À deux pas de la gare CFF, Au Gourmand vous invite à découvrir une cuisine coréenne conviviale : des viandes marinées à griller, des bibimbaps, des sushi et des nouilles à savourer ensemble.</p><a className="text-link" href="#visite">Nous rendre visite <span>→</span></a></div><div className="stamp">맛<br />있<br />게</div></section><Visit /><Footer /></main>
 }
 
 function MenuPage() {
