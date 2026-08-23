@@ -1,5 +1,6 @@
 import { BrowserRouter, Link, Route, Routes } from 'react-router-dom'
-import { useEffect, useState, type FormEvent } from 'react'
+import { createContext, useContext, useEffect, useState, type FormEvent } from 'react'
+import { useNavigate } from 'react-router-dom'
 import './App.css'
 
 type MenuKind = 'entrees' | 'sushi' | 'barbecue' | 'bibimbap' | 'plats' | 'nouilles' | 'boissons' | 'vins' | 'desserts'
@@ -109,13 +110,16 @@ const categories: { id: MenuKind; label: string }[] = [
   { id: 'boissons', label: 'Boissons' }, { id: 'vins', label: 'Vins & apéritifs' }, { id: 'desserts', label: 'Desserts & glaces' },
 ]
 
+const BookingContext = createContext<() => void>(() => undefined)
+
 function Mark() { return <span className="mark" aria-hidden="true"><i /><i /><i /><i /></span> }
 
 function Navigation({ dark = false }: { dark?: boolean }) {
+  const openBooking = useContext(BookingContext)
   return <nav className={`nav ${dark ? 'nav-dark' : ''}`} aria-label="Navigation principale">
     <Link className="brand" to="/" aria-label="Accueil Barbecue Coréen Au Gourmand"><Mark /> <span>AU GOURMAND</span></Link>
     <div className="nav-links"><a href="/#histoire">Le restaurant</a><a href="/#visite">Nous trouver</a></div>
-    <div className="nav-actions"><a className="book-link" href="/menu_2026_complet.pdf">Menu</a><Link className="book-link" to="/reservation">Réserver</Link></div>
+    <div className="nav-actions"><a className="book-link" href="/menu_2026_complet.pdf">Menu</a><button className="book-link" type="button" onClick={openBooking}>Réserver</button></div>
   </nav>
 }
 
@@ -124,13 +128,25 @@ function Footer() {
 }
 
 function Visit() {
-  return <section className="visit-section" id="visite"><div><p className="eyebrow">Nous trouver</p><h2>À deux pas<br /><em>de la gare.</em></h2></div><div className="visit-details"><p>Du mardi au dimanche<br />11:00 — 14:30 · 18:00 — 22:00</p><p>26 avenue Louis-Ruchonnet<br />1003 Lausanne, Suisse</p><Link to="/reservation">Demander une réservation <span>↗</span></Link></div><div className="visit-mark"><Mark /></div></section>
+  const openBooking = useContext(BookingContext)
+  return <section className="visit-section" id="visite"><div><p className="eyebrow">Nous trouver</p><h2>À deux pas<br /><em>de la gare.</em></h2></div><div className="visit-details"><p>Du mardi au dimanche<br />11:00 — 14:30 · 18:00 — 22:00</p><p>26 avenue Louis-Ruchonnet<br />1003 Lausanne, Suisse</p><button type="button" onClick={openBooking}>Demander une réservation <span>↗</span></button></div><div className="visit-mark"><Mark /></div></section>
+}
+
+function BookingChoice({ onClose }: { onClose: () => void }) {
+  useEffect(() => {
+    const closeOnEscape = (event: KeyboardEvent) => { if (event.key === 'Escape') onClose() }
+    window.addEventListener('keydown', closeOnEscape)
+    return () => window.removeEventListener('keydown', closeOnEscape)
+  }, [onClose])
+
+  return <div className="modal-backdrop" role="presentation" onMouseDown={onClose}><section className="booking-choice" role="dialog" aria-modal="true" aria-labelledby="booking-choice-title" onMouseDown={(event) => event.stopPropagation()}><button className="close" type="button" aria-label="Fermer" onClick={onClose}>×</button><p className="eyebrow rust">Réservation</p><h2 id="booking-choice-title">Comment préférez-vous <em>réserver ?</em></h2><a className="booking-option phone-option" href="tel:+41213115474"><span>Réservation par téléphone</span><small>Plus rapide · 021 311 54 74</small><b>→</b></a><Link className="booking-option" to="/reservation" onClick={onClose}><span>Formulaire de réservation</span><small>Choisir votre date et votre créneau</small><b>→</b></Link></section></div>
 }
 
 type ReservationForm = { name: string; email: string; phone: string; date: string; time: string; guests: string; notes: string }
 type Availability = { time: string; available: boolean }
 
 function ReservationPage() {
+  const navigate = useNavigate()
   const [form, setForm] = useState<ReservationForm>({ name: '', email: '', phone: '', date: '', time: '', guests: '2', notes: '' })
   const [slots, setSlots] = useState<Availability[]>([])
   const [availabilityMessage, setAvailabilityMessage] = useState('')
@@ -175,7 +191,7 @@ function ReservationPage() {
     }
   }
 
-  return <main className="reservation-page"><header className="menu-page-nav"><Navigation dark /></header><section className="reservation-section"><div className="reservation-copy"><p className="eyebrow rust">Réservation</p><h1>Votre table,<br /><em>en quelques instants.</em></h1><p>Choisissez une date et un créneau. Les disponibilités sont vérifiées en temps réel avant l’envoi de votre demande.</p><Link className="text-link" to="/">Retour à l’accueil <span>→</span></Link></div><form className="reservation-form" name="reservation" onSubmit={submitReservation}><label className="honeypot">Ne pas remplir ce champ<input name="bot-field" tabIndex={-1} autoComplete="off" /></label><div className="form-grid"><label>Nom complet<input required value={form.name} onChange={(event) => updateField('name', event.target.value)} /></label><label>E-mail<input type="email" required value={form.email} onChange={(event) => updateField('email', event.target.value)} /></label><label>Téléphone<input type="tel" required value={form.phone} onChange={(event) => updateField('phone', event.target.value)} /></label><label>Nombre de personnes<select value={form.guests} onChange={(event) => updateField('guests', event.target.value)}>{Array.from({ length: 12 }, (_, index) => <option key={index + 1} value={index + 1}>{index + 1} {index === 0 ? 'personne' : 'personnes'}</option>)}</select></label><label>Date<input type="date" required min={new Date().toISOString().slice(0, 10)} value={form.date} onChange={(event) => updateField('date', event.target.value)} /></label><label>Créneau<select required disabled={!slots.length} value={form.time} onChange={(event) => updateField('time', event.target.value)}><option value="">Choisir un créneau</option>{slots.filter((slot) => slot.available).map((slot) => <option key={slot.time} value={slot.time}>{slot.time}</option>)}</select></label></div><p className="availability-message" aria-live="polite">{availabilityMessage}</p><label>Message <span>facultatif</span><textarea rows={4} value={form.notes} onChange={(event) => updateField('notes', event.target.value)} placeholder="Allergies, occasion particulière…" /></label><button className="reservation-submit" type="submit" disabled={submitState === 'sending' || !form.time}>{submitState === 'sending' ? 'Envoi en cours…' : 'Envoyer la demande'}</button>{submitMessage && <p className={`form-message ${submitState}`} role="status">{submitMessage}</p>}<p className="form-note">La demande est enregistrée puis confirmée par notre équipe.</p></form></section><Footer /></main>
+  return <main className="reservation-page"><header className="menu-page-nav"><Navigation dark /></header><section className="reservation-section"><div className="reservation-copy"><p className="eyebrow rust">Réservation</p><h1>Votre table,<br /><em>en quelques instants.</em></h1><p>Choisissez une date et un créneau. Les disponibilités sont vérifiées en temps réel avant l’envoi de votre demande.</p><Link className="text-link" to="/">Retour à l’accueil <span>→</span></Link></div>{submitState === 'success' ? <div className="reservation-success"><p className="eyebrow rust">Demande envoyée</p><h2>Votre demande a bien été <em>reçue.</em></h2><p>Nous vous confirmerons la réservation rapidement.</p><p>Pour des questions, n’hésitez pas d’appeler <a href="tel:+41213115474">021 311 54 74</a>.</p><button type="button" className="reservation-submit" onClick={() => navigate('/')}>Fermer le formulaire</button></div> : <form className="reservation-form" name="reservation" onSubmit={submitReservation}><a className="reservation-phone" href="tel:+41213115474">Réservation rapide par téléphone <strong>021 311 54 74</strong></a><label className="honeypot">Ne pas remplir ce champ<input name="bot-field" tabIndex={-1} autoComplete="off" /></label><div className="form-grid"><label>Nom complet<input required value={form.name} onChange={(event) => updateField('name', event.target.value)} /></label><label>E-mail<input type="email" required value={form.email} onChange={(event) => updateField('email', event.target.value)} /></label><label>Téléphone<input type="tel" required value={form.phone} onChange={(event) => updateField('phone', event.target.value)} /></label><label>Nombre de personnes<select value={form.guests} onChange={(event) => updateField('guests', event.target.value)}>{Array.from({ length: 12 }, (_, index) => <option key={index + 1} value={index + 1}>{index + 1} {index === 0 ? 'personne' : 'personnes'}</option>)}</select></label><label>Date<input type="date" required min={new Date().toISOString().slice(0, 10)} value={form.date} onChange={(event) => updateField('date', event.target.value)} /></label><label>Créneau<select required disabled={!slots.length} value={form.time} onChange={(event) => updateField('time', event.target.value)}><option value="">Choisir un créneau</option>{slots.filter((slot) => slot.available).map((slot) => <option key={slot.time} value={slot.time}>{slot.time}</option>)}</select></label></div><p className="availability-message" aria-live="polite">{availabilityMessage}</p><label>Message <span>facultatif</span><textarea rows={4} value={form.notes} onChange={(event) => updateField('notes', event.target.value)} placeholder="Allergies, occasion particulière…" /></label><button className="reservation-submit" type="submit" disabled={submitState === 'sending' || !form.time}>{submitState === 'sending' ? 'Envoi en cours…' : 'Envoyer la demande'}</button>{submitMessage && <p className={`form-message ${submitState}`} role="status">{submitMessage}</p>}<p className="form-note">La demande est enregistrée puis confirmée par notre équipe.</p></form>}</section><Footer /></main>
 }
 
 function MenuContent() {
@@ -192,7 +208,8 @@ function MenuPage() {
 }
 
 function App() {
-  return <BrowserRouter><Routes><Route path="/" element={<Home />} /><Route path="/menu" element={<MenuPage />} /><Route path="/reservation" element={<ReservationPage />} /><Route path="*" element={<Home />} /></Routes></BrowserRouter>
+  const [bookingOpen, setBookingOpen] = useState(false)
+  return <BookingContext.Provider value={() => setBookingOpen(true)}><BrowserRouter><Routes><Route path="/" element={<Home />} /><Route path="/menu" element={<MenuPage />} /><Route path="/reservation" element={<ReservationPage />} /><Route path="*" element={<Home />} /></Routes>{bookingOpen && <BookingChoice onClose={() => setBookingOpen(false)} />}</BrowserRouter></BookingContext.Provider>
 }
 
 export default App
