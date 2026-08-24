@@ -171,7 +171,10 @@ function ReservationPage() {
     return () => controller.abort()
   }, [form.date, form.guests])
 
-  const updateField = (field: keyof ReservationForm, value: string) => setForm((current) => ({ ...current, [field]: value }))
+  const updateField = (field: keyof ReservationForm, value: string) => {
+    setForm((current) => ({ ...current, [field]: value }))
+    if (field === 'time' && value) setAvailabilityMessage('')
+  }
 
   const submitReservation = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
