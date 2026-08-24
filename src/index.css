@@ -8,3 +8,6 @@ button, a { font: inherit; }
 button { cursor: pointer; }
 a { color: inherit; }
 .visit-details .visit-address { display: grid; justify-items: start; margin-bottom: 21px; }
+@media (max-width: 700px) {
+  .nav-actions .book-link { font-size: 12px; padding-bottom: 4px; }
+}
