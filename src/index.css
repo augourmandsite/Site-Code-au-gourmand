@@ -12,4 +12,4 @@ a { color: inherit; }
   .nav-actions .book-link { font-size: 12px; padding-bottom: 4px; }
 }
 
-.hero .round-button { background: rgba(12, 8, 4, 0.28); gap: 14px; padding-left: 16px; }
+.hero .round-button { width: min(350px, 100%); background: rgba(12, 8, 4, 0.28); gap: 14px; padding-left: 16px; }
