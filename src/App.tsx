@@ -129,7 +129,7 @@ function Footer() {
 
 function Visit() {
   const openBooking = useContext(BookingContext)
-  return <section className="visit-section" id="visite"><div><p className="eyebrow">Nous trouver</p><h2>À 10 minutes<br /><em>de la gare de Lausanne.</em></h2></div><div className="visit-details"><p>Du mardi au dimanche<br />11:00 — 14:30 · 18:00 — 22:00</p><a className="visit-address" href="https://maps.app.goo.gl/3NcscMh9rJsDi9JH6" target="_blank" rel="noreferrer">26 avenue Louis-Ruchonnet<br />1003 Lausanne, Suisse</a><button type="button" onClick={openBooking}>Demander une réservation </button></div></section>
+  return <section className="visit-section" id="visite"><div><p className="eyebrow">Nous trouver</p><h2>À 10 minutes<br /><em>de la gare de Lausanne.</em></h2></div><div className="visit-details"><p>Du mardi au dimanche<br />11:00 — 14:30 · 18:00 — 22:00</p><div className="visit-address"><a href="https://maps.app.goo.gl/3NcscMh9rJsDi9JH6" target="_blank" rel="noreferrer">26 avenue Louis-Ruchonnet</a><a href="https://maps.app.goo.gl/3NcscMh9rJsDi9JH6" target="_blank" rel="noreferrer">1003 Lausanne, Suisse</a></div><button type="button" onClick={openBooking}>Demander une réservation </button></div></section>
 }
 
 function BookingChoice({ onClose }: { onClose: () => void }) {

@@ -7,4 +7,4 @@ body { margin: 0; min-width: 320px; }
 button, a { font: inherit; }
 button { cursor: pointer; }
 a { color: inherit; }
-.visit-details .visit-address { display: block; width: fit-content; margin-bottom: 21px; }
+.visit-details .visit-address { display: grid; justify-items: start; margin-bottom: 21px; }
