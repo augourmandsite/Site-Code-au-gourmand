@@ -16,4 +16,6 @@ a { color: inherit; }
 .hero .round-button { background: rgba(12, 8, 4, 0.28); gap: 14px; padding-left: 16px; }
 
 html.reservation-background { background: var(--ink); }
-body.reservation-background { background: var(--paper); }
+body.reservation-background {
+  background: linear-gradient(to bottom, var(--paper) 0 75%, var(--ink) 75% 100%);
+}
