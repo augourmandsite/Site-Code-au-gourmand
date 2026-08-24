@@ -154,6 +154,15 @@ function ReservationPage() {
   const [submitMessage, setSubmitMessage] = useState('')
 
   useEffect(() => {
+    document.documentElement.classList.add('reservation-background')
+    document.body.classList.add('reservation-background')
+    return () => {
+      document.documentElement.classList.remove('reservation-background')
+      document.body.classList.remove('reservation-background')
+    }
+  }, [])
+
+  useEffect(() => {
     if (!form.date) { setSlots([]); setAvailabilityMessage(''); return }
     const controller = new AbortController()
     setAvailabilityMessage('Vérification des créneaux…')
